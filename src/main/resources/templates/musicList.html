@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Electronic Dance Music Discovery</title>
+</head>
+<body style="text-align: center;">
+    <h1>Welcome to the website ;)</h1>
+    <a th:href="@{/}">Next music</a>
+
+    <div th:if="${releaseData} != null">
+        <h2>Release Information:</h2>
+        <!--
+        <p>Title: <span th:text="${releaseData.title}"></span></p>
+        <p>Artist: <span th:text="${releaseData.artist}"></span></p>
+        <p>Label: <span th:text="${releaseData.label}"></span></p>
+        <p>Release Date: <span th:text="${releaseData.releaseDate}"></span></p>
+        -->
+
+        <p>Title: <span th:text="${releaseTitle}"></span></p>
+        <p>Artist: <span th:text="${artistNames}"></span></p>
+        <a th:href="@{https://www.discogs.com/release/{id}(id=${releaseId})}" target="_blank">More info in discogs</a>
+    </div>
+
+    <h2 >Videos:</h2>
+    <div th:each="video : ${videos}" th:if="${video} != null" style="border: 1px solid black; margin-block: 50px; ">
+        <p style="border-bottom: 1px solid black; text-align: center; padding-block: 10px; margin: auto; margin-bottom: 25px;">
+            Title: <span th:text="${video.title}"></span><br>
+        </p>
+        <iframe th:src="${video.embedUrl}" width="560" height="315" frameborder="0" allowfullscreen></iframe>
+        <p>URL: <a th:href="${video.uri}" target="_blank">Watch here</a></p>
+    </div>
+    <div th:if="${videos.empty}" style="border: 1px solid black; margin-block: 50px; ">
+        <h3>Sorry, there are no music videos.</h3>
+    </div>
+
+</body>
+</html>

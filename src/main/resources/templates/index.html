@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Electronic Dance Music Discovery</title>
+</head>
+<body style="text-align: center;">
+    <h1>Welcome to the website ;)</h1>
+    <div th:if="${discogs} != null">
+        <h2>Release Information:</h2>
+        <p>Title: <span th:text="${discogs.title}"></span></p>
+        <p>Artist: <span th:text="${discogs.artist}"></span></p>
+        <p>Label: <span th:text="${discogs.label}"></span></p>
+        <p>Release Date: <span th:text="${discogs.releaseDate}"></span></p>
+    </div>
+
+    <h2>Videos:</h2>
+    <div th:each="video : ${videos}" th:if="${video} != null">
+        <p>
+            Title: <span th:text="${video.title}"></span><br>
+            URL: <a th:href="${video.uri}" target="_blank">Watch here</a>
+        </p>
+    </div>
+
+
+</body>
+</html>
