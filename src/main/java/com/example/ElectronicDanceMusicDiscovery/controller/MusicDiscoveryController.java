@@ -2,14 +2,14 @@ package com.example.ElectronicDanceMusicDiscovery.controller;
 
 import com.example.ElectronicDanceMusicDiscovery.model.Discogs;
 import com.example.ElectronicDanceMusicDiscovery.service.DiscogsService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -19,20 +19,71 @@ public class MusicDiscoveryController {
     private DiscogsService discogsService;
 
     @GetMapping("/")
-    public String mainPage(Model model){
+    public String mainPage(Model model,@RequestParam(name = "releaseId", required = false) Integer releaseId,
+                           HttpServletResponse response, @CookieValue(value = "historyReleases", required = false) String cookieValue){
 
         List<Integer> musicList = discogsService.getListOfReleaseId("Happy+Hardcore");
+        if (releaseId == null){
+            Random randomizer = new Random();
 
-        Random randomizer = new Random();
+            // Select random id from the music list
+            releaseId = musicList.get(randomizer.nextInt(musicList.size()));
 
-        // Select random id from the music list
-        int releaseId = musicList.get(randomizer.nextInt(musicList.size()));
+            return "redirect:/?releaseId=" + releaseId;
+
+        }
+
+        // if
+        if (cookieValue == null || cookieValue.isEmpty()) {
+            Cookie newCookie = new Cookie("historyReleases", releaseId.toString());
+            newCookie.setMaxAge(Integer.MAX_VALUE);
+            newCookie.setPath("/");
+            response.addCookie(newCookie);
+        } else {
+            String updatedValue = cookieValue + "|" + releaseId;
+            Cookie updatedCookie = new Cookie("historyReleases", updatedValue);
+            updatedCookie.setMaxAge(Integer.MAX_VALUE);
+            updatedCookie.setPath("/");
+            response.addCookie(updatedCookie);
+        }
+
+        // Retrieve all release IDs from cookie
+        String[] releaseIds = cookieValue.split("\\|");
+        List<Map<String, Object>> historicalReleaseDataList = new ArrayList<>();
+
+        int maxLengthOfReleaseIds = releaseIds.length;
+        int minLengthOfReleaseIds = releaseIds.length - 5;
+
+        // Fetch data for each historical release
+        for (int i = minLengthOfReleaseIds; i < maxLengthOfReleaseIds; i++) {
+            try {
+
+                int idInt = Integer.parseInt(releaseIds[i].trim());
+                Map<String, Object> releaseData = discogsService.getReleaseData(idInt);
+                historicalReleaseDataList.add(releaseData);
+            } catch (NumberFormatException e) {
+                // Handle the error if the ID is not a valid integer
+                e.printStackTrace();
+            }
+        }
+
+        // Reverse the order of list
+        Collections.reverse(historicalReleaseDataList);
+
+        // limit List to 5 elements
+        historicalReleaseDataList = historicalReleaseDataList.stream()
+                .limit(5)
+                .collect(Collectors.toList());
+
+        Random nextRandomizer = new Random();
+        int nextReleaseId = musicList.get(nextRandomizer.nextInt(musicList.size()));
 
         Map<String, Object> releaseData = discogsService.getReleaseData(releaseId);
 
         // Assuming the structure contains the following fields
         String title = (String) releaseData.get("title");
         List<Map<String, Object>> artists = (List<Map<String, Object>>) releaseData.get("artists");
+        String releaseDate = (String) releaseData.get("released_formatted");
 
 
         // Getting the artist names
@@ -40,15 +91,24 @@ public class MusicDiscoveryController {
                 .map(artist -> (String) artist.get("name"))
                 .collect(Collectors.toList());
 
+
         // Add data to the model
         model.addAttribute("musicList", musicList);
         model.addAttribute("releaseData", releaseData);
         model.addAttribute("releaseTitle", title);
         model.addAttribute("artistNames", artistNames);
         model.addAttribute("releaseId", releaseId);
+        model.addAttribute("releaseDate", releaseDate);
+        model.addAttribute("historicalReleaseData", historicalReleaseDataList);
+
+        model.addAttribute("nextReleaseId", nextReleaseId);
 
         // Extract videos (if any)
         List<Map<String, Object>> videos = (List<Map<String, Object>>) releaseData.get("videos");
+
+        // Extract Images (if any)
+        List<Map<String, Object>> images = (List<Map<String, Object>>) releaseData.get("images");
+
 
         // Modify the URLs for embedding
         if (videos != null) {
@@ -69,6 +129,7 @@ public class MusicDiscoveryController {
         }
 
         model.addAttribute("videos", videos);
+        model.addAttribute("images", images);
 
         return "musicList";
     }

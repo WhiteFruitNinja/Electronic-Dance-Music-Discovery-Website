@@ -3,36 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <title>Electronic Dance Music Discovery</title>
+    <style>
+        .hover-element:hover {
+            background-color: gray;
+        }
+    </style>
 </head>
-<body style="text-align: center;">
-    <h1>Welcome to the website ;)</h1>
-    <a th:href="@{/}">Next music</a>
+<body style="text-align: center; width: 85%; margin: auto;">
+    <h1>Electronic Dance Music Discovery</h1>
 
-    <div th:if="${releaseData} != null">
-        <h2>Release Information:</h2>
-        <!--
-        <p>Title: <span th:text="${releaseData.title}"></span></p>
-        <p>Artist: <span th:text="${releaseData.artist}"></span></p>
-        <p>Label: <span th:text="${releaseData.label}"></span></p>
-        <p>Release Date: <span th:text="${releaseData.releaseDate}"></span></p>
-        -->
+    <div style="background-color: rgb(240 240 240); border-top-left-radius: 10px; border-top-right-radius: 10px; border: 1px solid black;">
+        <div style="background-color: rgb(175 175 175); padding: 5px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom: 1px solid black;">
+            <a th:href="@{/?releaseId={releaseId}(releaseId=${nextReleaseId})}" style="background-color: rgb(150 150 150); border-radius: 10px; padding: 5px; margin-inline: auto;">Next music</a>
+        </div>
 
-        <p>Title: <span th:text="${releaseTitle}"></span></p>
-        <p>Artist: <span th:text="${artistNames}"></span></p>
-        <a th:href="@{https://www.discogs.com/release/{id}(id=${releaseId})}" target="_blank">More info in discogs</a>
+        <div style="display: flex;">
+            <div th:if="${releaseData} != null" style="width: 25%; background-color: rgb(210 210 210); border-radius: 10px; padding: 5px; margin: 10px 10px; border: 1px solid black;">
+                <h2>Release Information:</h2>
+
+                <div th:each="image, iterStat : ${images}">
+                    <img th:if="${iterStat.first}" th:src="${image.get('uri')}" style="width: 256px; border: 1px solid black;">
+                </div>
+                <p>Title: <span th:text="${releaseTitle}"></span></p>
+                <p>Artist:
+                <span th:each="artistName, iterStat : ${artistNames}">
+                    <span th:text="${artistName}"></span>
+                    <span th:if="${!iterStat.last}">, </span>
+                </span>
+                </p>
+                <p>Released: <span th:text="${releaseDate}"></span></p>
+                <a th:href="@{https://www.discogs.com/release/{id}(id=${releaseId})}" target="_blank">More info in Discogs</a>
+            </div>
+            <div style="width: 75%; background-color: rgb(210 210 210); border-radius: 10px; margin: 10px 10px; border: 1px solid black;">
+                <h2>Videos:</h2>
+                <div style="overflow-x: auto; overflow-y: hidden; background-color: rgb(175 175 175); padding: 10px; border-top-left-radius: 10px; margin: 10px; border: 1px solid black; border-top-right-radius: 10px;">
+                    <div class="video-container" style="display: inline-flex; gap: 10px;">
+                        <div class="video-element" th:each="video : ${videos}" th:if="${video} != null" style="border: 1px solid black; margin-bottom: 50px; width: max-content; margin-inline: auto; border-radius: 5px; width: fit-content;">
+                            <p style="border-bottom: 1px solid black; text-align: center; padding-block: 10px; margin: auto;">
+                                <span th:text="${video.title}"></span><br>
+                            </p>
+                            <iframe th:src="${video.embedUrl}" width="410" height="230" frameborder="0" allowfullscreen style="padding-inline: 10px; margin-top: 25px; width: fit-content;"></iframe>
+                            <p>URL: <a th:href="${video.uri}" target="_blank">Watch here</a></p>
+                        </div>
+                        <div th:if="${videos.empty}" style="border: 1px solid black; margin-bottom: 50px; width: max-content; margin-inline: auto; padding-inline: 10px; border-radius: 5px;">
+                            <h3>Sorry, there are no music videos.</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+        <div style="background-color: rgb(210 210 210); border-radius: 10px; margin: 10px 10px; border: 1px solid black;">
+            <h2 style="border-bottom: 1px solid black; padding-block: 25px; margin-top: 0;">History:</h2>
+            <div th:each="release : ${historicalReleaseData}" style="display: flex; gap: 10px; padding: 5px;" class="hover-element">
+                <div>
+                    <div th:each="image, iterStat : ${release.images}">
+                        <img th:if="${iterStat.first}" th:src="${image.get('uri')}" style="height: 150px; border: 1px solid black;">
+                    </div>
+                </div>
+                <div style="text-align: left;">
+                    <h3 th:text="${release.title}"></h3>
+                    <p>
+                        <strong>Artists:</strong>
+                        <span th:each="artist : ${release.artists}" th:text="${artist.name} + (', ')" th:if="${artist.name}"></span>
+                    </p>
+                    <p th:text="'Release Date: ' + ${release['released_formatted']}"></p>
+                    <a th:href="@{/?releaseId={previousReleaseId}(previousReleaseId=${release.id})}">More info</a>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <h2 >Videos:</h2>
-    <div th:each="video : ${videos}" th:if="${video} != null" style="border: 1px solid black; margin-block: 50px; ">
-        <p style="border-bottom: 1px solid black; text-align: center; padding-block: 10px; margin: auto; margin-bottom: 25px;">
-            Title: <span th:text="${video.title}"></span><br>
-        </p>
-        <iframe th:src="${video.embedUrl}" width="560" height="315" frameborder="0" allowfullscreen></iframe>
-        <p>URL: <a th:href="${video.uri}" target="_blank">Watch here</a></p>
-    </div>
-    <div th:if="${videos.empty}" style="border: 1px solid black; margin-block: 50px; ">
-        <h3>Sorry, there are no music videos.</h3>
-    </div>
+    <hr>
+    <p>This application uses Discogs’ API but is not affiliated with, sponsored or endorsed by Discogs. ‘Discogs’ is a trademark of Zink Media, LLC.</p>
+    <a th:href="@{https://discogs.com}">Data provided by Discogs.</a>
 
 </body>
 </html>
