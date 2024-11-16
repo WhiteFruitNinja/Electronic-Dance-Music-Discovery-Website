@@ -131,6 +131,6 @@ public class MusicDiscoveryController {
         model.addAttribute("videos", videos);
         model.addAttribute("images", images);
 
-        return "musicList";
+        return "index";
     }
 }

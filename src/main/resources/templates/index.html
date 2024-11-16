@@ -3,25 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <title>Electronic Dance Music Discovery</title>
+    <link rel="stylesheet" href="/styles.css">
 </head>
-<body style="text-align: center;">
-    <h1>Welcome to the website ;)</h1>
-    <div th:if="${discogs} != null">
-        <h2>Release Information:</h2>
-        <p>Title: <span th:text="${discogs.title}"></span></p>
-        <p>Artist: <span th:text="${discogs.artist}"></span></p>
-        <p>Label: <span th:text="${discogs.label}"></span></p>
-        <p>Release Date: <span th:text="${discogs.releaseDate}"></span></p>
+<body>
+    <div class="web-title">
+        <h1 class="web-title-name">Electronic Dance Music Discovery</h1>
+        <div class="next-music-box">
+            <a class="next-music-link" th:href="@{/?releaseId={releaseId}(releaseId=${nextReleaseId})}">Next music</a>
+        </div>
     </div>
 
-    <h2>Videos:</h2>
-    <div th:each="video : ${videos}" th:if="${video} != null">
-        <p>
-            Title: <span th:text="${video.title}"></span><br>
-            URL: <a th:href="${video.uri}" target="_blank">Watch here</a>
-        </p>
+    <div class="main-box">
+        <div class="main-box-open"></div>
+
+        <div class="main-box-container">
+            <div class="info-box" th:if="${releaseData} != null">
+                <h2>Release Information:</h2>
+
+                <div th:each="image, iterStat : ${images}">
+                    <img class="main-image" th:if="${iterStat.first}" th:src="${image.get('uri')}">
+                </div>
+                <strong>Title: </strong><span th:text="${releaseTitle}"></span>
+                <br>
+                <strong>Artist:  </strong>
+                <span th:each="artistName, iterStat : ${artistNames}">
+                    <span th:text="${artistName}"></span>
+                    <span th:if="${!iterStat.last}">, </span>
+                </span>
+                <br>
+                <strong>Released: </strong><span th:text="${releaseDate}"></span>
+                <br>
+                <a th:href="@{https://www.discogs.com/release/{id}(id=${releaseId})}" target="_blank">More info in Discogs</a>
+            </div>
+            <div class="video-box">
+                <h2>Videos:</h2>
+                <div class="video-scroller-box">
+                    <div class="video-container">
+                        <div class="video-element" th:each="video : ${videos}" th:if="${video} != null">
+                            <p class="video-title">
+                                <span th:text="${video.title}"></span><br>
+                            </p>
+                            <iframe class="video-embeded-screen" th:src="${video.embedUrl}" width="410" height="230" frameborder="0" allowfullscreen></iframe>
+                            <p>URL: <a th:href="${video.uri}" target="_blank">Watch here</a></p>
+                        </div>
+                        <div class="videos-empty" th:if="${videos.empty}">
+                            <h3>Sorry, there are no music videos.</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+        <div class="history-box">
+            <h2 class="history-text">History:</h2>
+            <div class="history-container">
+                <div class="history-element" th:each="release : ${historicalReleaseData}">
+                    <div>
+                        <div th:each="image, iterStat : ${release.images}">
+                            <img class="history-image" th:if="${iterStat.first}" th:src="${image.get('uri')}">
+                        </div>
+                    </div>
+                    <div class="history-description">
+                        <h3 th:text="${release.title}"></h3>
+                        <strong>Artists:</strong>
+                        <span th:each="artist : ${release.artists}" th:text="${artist.name} + (', ')" th:if="${artist.name}"></span>
+                        <br>
+                        <strong>Release Date: </strong><span th:text="${release['released_formatted']}"></span>
+                        <br>
+                        <a th:href="@{/?releaseId={previousReleaseId}(previousReleaseId=${release.id})}">More info</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-box-close"></div>
     </div>
 
+    <hr>
+    <p>This application uses Discogs’ API but is not affiliated with, sponsored or endorsed by Discogs. ‘Discogs’ is a trademark of Zink Media, LLC.</p>
+    <a th:href="@{https://discogs.com}">Data provided by Discogs.</a>
 
 </body>
 </html>
