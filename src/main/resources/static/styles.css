@@ -3,13 +3,13 @@
 }
 
 .history-element:nth-last-child(1){
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
 }
 
 .history-element:nth-child(1){
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
 }
 
 body{
@@ -34,38 +34,42 @@ body{
 }
 
 .next-music-link{
-    background-color: rgb(150 150 150);
     border-radius: 10px;
     padding: 5px;
     margin-inline: auto;
     font-size: 50px;
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+    background-color: rgb(175 175 175);
+    border: 2px solid rgb(200 200 200);
 }
 
 .main-box{
     background-color: rgb(240 240 240);
     border-radius: 10px;
-    border: 1px solid black;
+    border: 2px solid rgb(200 200 200);
 }
 
 .main-box-open{
     background-color: rgb(175 175 175);
     padding: 14px;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border-bottom: 1px solid black;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom: 2px solid rgb(200 200 200);
 }
 
 .main-image{
     width: 256px;
-    border: 1px solid black;
+    border: 2px solid rgb(175 175 175);
 }
 
 .video-box{
-    width: 75%;
+    display: grid;
     background-color: rgb(210 210 210);
     border-radius: 10px;
     margin: 10px 10px;
-    border: 1px solid black;
+    border: 2px solid rgb(175 175 175);
 }
 
 .video-scroller-box{
@@ -75,7 +79,7 @@ body{
     padding: 10px;
     border-top-left-radius: 10px;
     margin: 10px;
-    border: 1px solid black;
+    border: 2px solid rgb(125 125 125);
     border-top-right-radius: 10px;
 }
 
@@ -85,7 +89,7 @@ body{
 }
 
 .video-element{
-    border: 1px solid black;
+    border: 2px solid rgb(100 100 100);
     margin-bottom: 50px;
     width: max-content;
     margin-inline: auto;
@@ -95,9 +99,9 @@ body{
 }
 
 .video-title{
-    border-bottom: 1px solid black;
+    border-bottom: 2px solid rgb(100 100 100);
     text-align: center;
-    padding-block: 10px;
+    padding: 10px;
     margin: auto;
     background-color: rgb(125 125 125);
     border-top-left-radius: 4px;
@@ -105,13 +109,14 @@ body{
 }
 
 .video-embeded-screen{
-    padding-inline: 10px;
+    margin-inline: 10px;
     margin-top: 25px;
     width: fit-content;
+    border: 2px solid rgb(50 50 50);
 }
 
 .videos-empty{
-    border: 1px solid black;
+    border: 2px solid rgb(225 225 225);
     margin-bottom: 50px;
     width: max-content;
     margin-inline: auto;
@@ -123,18 +128,23 @@ body{
     background-color: rgb(210 210 210);
     border-radius: 10px;
     margin: 10px 10px;
-    border: 1px solid black;
+    border: 2px solid rgb(175 175 175);
 }
 
 .history-text{
-    border-bottom: 1px solid black;
+    width: auto;
     padding-block: 25px;
-    margin-top: 0;
+    padding-inline: 20px;
+    background-color: rgb(150 150 150);
+    margin: 0;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom: 2px solid rgb(175 175 175);
 }
 
 .history-container{
     margin: 10px;
-    border: 1px solid black;
+    border: 2px solid rgb(125 125 125);
     background-color: rgb(175 175 175);
     border-radius: 10px;
 }
@@ -147,7 +157,7 @@ body{
 
 .history-image{
     height: 150px;
-    border: 1px solid black;
+    border: 2px solid rgb(150 150 150);
 }
 
 .history-description{
@@ -157,9 +167,9 @@ body{
 .main-box-close{
     background-color: rgb(175 175 175);
     padding: 14px;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    border-top: 1px solid black;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-top: 2px solid rgb(200 200 200);
 }
 
 .main-box-container{
@@ -167,9 +177,36 @@ body{
 }
 
 .info-box{
-    width: 25%;
     background-color: rgb(210 210 210);
-    border-radius: 10px; padding: 5px;
+    border-radius: 10px;
     margin: 10px 10px;
-    border: 1px solid black;
+    border: 2px solid rgb(175 175 175);
+}
+
+.info-text{
+    width: auto;
+    padding-block: 25px;
+    padding-inline: 20px;
+    background-color: rgb(150 150 150);
+    margin: 0;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom: 2px solid rgb(175 175 175);
+}
+
+.info-release{
+    margin-block: 5px;
+    margin-inline: 20px;
+    text-align: left;
+}
+
+.videos-text{
+    width: auto;
+    padding-block: 25px;
+    padding-inline: 20px;
+    background-color: rgb(150 150 150);
+    margin: 0;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom: 2px solid rgb(175 175 175);
 }
