@@ -47,24 +47,40 @@ public class MusicDiscoveryController {
             response.addCookie(updatedCookie);
         }
 
+        String[] releaseIds = null;
+
         // Retrieve all release IDs from cookie
-        String[] releaseIds = cookieValue.split("\\|");
+        if (cookieValue != null){
+            releaseIds = cookieValue.split("\\|");
+        }
+
         List<Map<String, Object>> historicalReleaseDataList = new ArrayList<>();
 
-        int maxLengthOfReleaseIds = releaseIds.length;
-        int minLengthOfReleaseIds = releaseIds.length - 5;
+        // Check if releaseIds is not null and has elements
+        if (releaseIds != null && releaseIds.length > 0) {
+            int maxLengthOfReleaseIds = releaseIds.length;
+            // Ensure minLengthOfReleaseIds is not out of bounds
+            int minLengthOfReleaseIds = Math.max(0, releaseIds.length - 5);
 
-        // Fetch data for each historical release
-        for (int i = minLengthOfReleaseIds; i < maxLengthOfReleaseIds; i++) {
-            try {
-
-                int idInt = Integer.parseInt(releaseIds[i].trim());
-                Map<String, Object> releaseData = discogsService.getReleaseData(idInt);
-                historicalReleaseDataList.add(releaseData);
-            } catch (NumberFormatException e) {
-                // Handle the error if the ID is not a valid integer
-                e.printStackTrace();
+            // Fetch data for each historical release
+            for (int i = minLengthOfReleaseIds; i < maxLengthOfReleaseIds; i++) {
+                try {
+                    int idInt = Integer.parseInt(releaseIds[i].trim());
+                    Map<String, Object> releaseData = discogsService.getReleaseData(idInt);
+                    historicalReleaseDataList.add(releaseData);
+                } catch (NumberFormatException e) {
+                    // Handle the error if the ID is not a valid integer
+                    System.err.println("Failed to parse release ID: " + releaseIds[i]);
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    // Handle any other exceptions thrown by getReleaseData
+                    System.err.println("An error occurred while fetching release data for ID: " + releaseIds[i]);
+                    e.printStackTrace();
+                }
             }
+        } else {
+            // Handle the case where releaseIds is null or empty
+            System.out.println("No release IDs found in the cookie.");
         }
 
         // Reverse the order of list
