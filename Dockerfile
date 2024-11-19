@@ -1,7 +1,5 @@
 FROM openjdk:23
 
-COPY target/electronic-dance-music-discovery.war /usr/app/
+COPY target/*.war electronic-dance-music-discovery.war
 
-WORKDIR /usr/app
-
-ENTRYPOINT ["java", "-jar", "electronic-dance-music-discovery.war"]
+ENTRYPOINT ["java","-jar","/electronic-dance-music-discovery.war"]
