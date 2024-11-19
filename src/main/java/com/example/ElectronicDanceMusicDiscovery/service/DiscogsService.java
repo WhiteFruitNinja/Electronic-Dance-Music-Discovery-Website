@@ -33,7 +33,7 @@ public class DiscogsService {
         int page = pageRandomizer.nextInt(maxPage-minPage) + minPage;
 
         String url = SEARCH_URL + "?style=" + musicGenreStyle + "&page=" + page + "&type=release&token=" + API_TOKEN;
-        System.out.println(url);
+
         try {
             ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
 

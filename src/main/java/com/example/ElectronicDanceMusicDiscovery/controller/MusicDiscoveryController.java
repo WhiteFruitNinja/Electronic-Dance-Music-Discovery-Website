@@ -2,7 +2,9 @@ package com.example.ElectronicDanceMusicDiscovery.controller;
 
 import com.example.ElectronicDanceMusicDiscovery.model.Discogs;
 import com.example.ElectronicDanceMusicDiscovery.service.DiscogsService;
+import eu.bitwalker.useragentutils.UserAgent;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,7 +22,19 @@ public class MusicDiscoveryController {
 
     @GetMapping("/")
     public String mainPage(Model model,@RequestParam(name = "releaseId", required = false) Integer releaseId,
-                           HttpServletResponse response, @CookieValue(value = "historyReleases", required = false) String cookieValue){
+                           HttpServletResponse response, @CookieValue(value = "historyReleases", required = false) String cookieValue,
+                           HttpServletRequest request){
+
+        String ipAddress = request.getRemoteAddr();
+        String userAgentString = request.getHeader("User-Agent");
+
+        // Parsing the User-Agent string
+        UserAgent userAgent = UserAgent.parseUserAgentString(userAgentString);
+
+        String os = userAgent.getOperatingSystem().getName();
+        String browser = userAgent.getBrowser().getName();
+
+        System.out.println("\n" + "IP address: " + ipAddress + "\n" + "OS: " + os + "\n" + "Browser: " + browser + "\n");
 
         List<Integer> musicList = discogsService.getListOfReleaseId("Happy+Hardcore");
         if (releaseId == null){
