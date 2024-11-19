@@ -12,6 +12,11 @@
     border-top-right-radius: 6px;
 }
 
+.next-music-link:hover{
+    color: white;
+    background-color: rgb(150 150 150);
+}
+
 body{
     text-align: center;
     width: 85%;
@@ -70,6 +75,7 @@ body{
     border-radius: 10px;
     margin: 10px 10px;
     border: 2px solid rgb(175 175 175);
+    width: 100%;
 }
 
 .video-scroller-box{
@@ -116,12 +122,13 @@ body{
 }
 
 .videos-empty{
-    border: 2px solid rgb(225 225 225);
-    margin-bottom: 50px;
+    border: 2px solid rgb(100 100 100);
+    margin-block: 50px;
     width: max-content;
     margin-inline: auto;
     padding-inline: 10px;
     border-radius: 5px;
+    background-color: rgb(150 150 150);
 }
 
 .history-box{
@@ -132,6 +139,7 @@ body{
 }
 
 .history-text{
+    height: 28px;
     width: auto;
     padding-block: 25px;
     padding-inline: 20px;
@@ -184,6 +192,7 @@ body{
 }
 
 .info-text{
+    height: 28px;
     width: auto;
     padding-block: 25px;
     padding-inline: 20px;
@@ -201,6 +210,7 @@ body{
 }
 
 .videos-text{
+    height: 28px;
     width: auto;
     padding-block: 25px;
     padding-inline: 20px;
@@ -209,4 +219,39 @@ body{
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     border-bottom: 2px solid rgb(175 175 175);
+}
+
+@media only screen and (max-width: 1000px){
+    .web-title{
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .video-box{
+        display: grid;
+        background-color: rgb(210 210 210);
+        border-radius: 10px;
+        margin: 10px 10px;
+        border: 2px solid rgb(175 175 175);
+        width: unset;
+    }
+
+    .main-box-container{
+        display: block;
+    }
+
+    .info-release{
+        margin-block: 5px;
+        margin-inline: 20px;
+    }
+
+    .web-title-name{
+        text-align: center;
+    }
+
+    .info-release{
+        text-align: center;
+    }
 }
