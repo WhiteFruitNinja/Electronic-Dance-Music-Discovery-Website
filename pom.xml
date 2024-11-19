@@ -57,7 +57,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>electronic-dance-music-discovery</finalName>
+		<finalName>electronic-dance-music-discovery-website</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
