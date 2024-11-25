@@ -3,15 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Electronic Dance Music Discovery</title>
-    <link rel="stylesheet" href="/styles.css?=4">
+    <link rel="stylesheet" href="/styles.css?=8">
 </head>
 <body>
-    <div class="web-title">
-        <h1 class="web-title-name">Electronic Dance Music Discovery</h1>
-        <div class="next-music-box">
-            <a class="next-music-link" th:href="@{/?releaseId={releaseId}(releaseId=${nextReleaseId})}">Next music</a>
-        </div>
-    </div>
+    <div th:insert="~{header}"></div>
 
     <div class="main-box">
         <div class="main-box-open"></div>
@@ -20,15 +15,29 @@
             <div class="info-box" th:if="${releaseData} != null">
                 <h2 class="info-text">Release Information</h2>
                 <div class="info-release">
-                    <div th:each="image, iterStat : ${images}">
+                    <div class="info-title-text">
+                        <strong th:text="${releaseData.title}"></strong>
+                    </div>
+                    <div class="main-image-element" th:if="${not #lists.isEmpty(images)}" th:each="image, iterStat : ${images}">
                         <img class="main-image" th:if="${iterStat.first}" th:src="${image.get('uri')}">
                     </div>
-                    <strong>Title: </strong><span th:text="${releaseTitle}"></span>
+                    <div th:if="${#lists.isEmpty(images)}">
+                        <img th:src="@{/images/no_image.png}" alt="No images available" class="main-image">
+                    </div>
+                    <br>
+                    <strong>Label: </strong>
+                    <span th:each="label, iterStat : ${releaseData.labels}">
+                        <span th:text="${label.name}"></span><span th:if="${!iterStat.last}"></span>
+                    </span>
                     <br>
                     <strong>Artist:  </strong>
                     <span th:each="artistName, iterStat : ${artistNames}">
-                        <span th:text="${artistName}"></span>
-                        <span th:if="${!iterStat.last}">, </span>
+                        <span th:text="${artistName}"></span><span th:if="${!iterStat.last}">, </span>
+                    </span>
+                    <br>
+                    <strong>Style: </strong>
+                    <span th:each="style, iterStat : ${releaseData.styles}">
+                        <span th:text="${style}"></span><span th:if="${!iterStat.last}">, </span>
                     </span>
                     <br>
                     <strong>Released: </strong><span th:text="${releaseDate}"></span>
@@ -42,13 +51,17 @@
                     <div class="video-container">
                         <div class="video-element" th:each="video : ${videos}" th:if="${video} != null">
                             <p class="video-title">
-                                <span th:text="${video.title}"></span><br>
+                                <strong th:text="${video.title}"></strong><br>
                             </p>
                             <iframe class="video-embeded-screen" th:src="${video.embedUrl}" width="410" height="230" frameborder="0" allowfullscreen></iframe>
-                            <p>URL: <a th:href="${video.uri}" target="_blank">Watch here</a></p>
+                            <br>
+                            <div class="video-url">
+                                <strong>URL: </strong>
+                                <a th:href="${video.uri}" target="_blank">Watch here</a>
+                            </div>
                         </div>
                         <div class="videos-empty" th:if="${videos.empty}">
-                            <h3>Sorry, there are no music videos.</h3>
+                            <h3>Sorry, there are no videos.</h3>
                         </div>
                     </div>
                 </div>
@@ -58,30 +71,49 @@
         <div class="history-box">
             <h2 class="history-text">History</h2>
             <div class="history-container">
-                <div class="history-element" th:each="release : ${historicalReleaseData}">
+                <div th:if="${not #lists.isEmpty(historicalReleaseData)}" class="history-element" th:each="release : ${historicalReleaseData}">
                     <div>
-                        <div th:each="image, iterStat : ${release.images}">
+                        <div th:if="${not #lists.isEmpty(release.images)}" th:each="image, iterStat : ${release.images}">
                             <img class="history-image" th:if="${iterStat.first}" th:src="${image.get('uri')}">
+                        </div>
+                        <div th:if="${#lists.isEmpty(release.images)}">
+                            <img th:src="@{/images/no_image.png}" alt="No images available" class="history-image">
                         </div>
                     </div>
                     <div class="history-description">
                         <h3 th:text="${release.title}"></h3>
-                        <strong>Artists:</strong>
-                        <span th:each="artist : ${release.artists}" th:text="${artist.name} + (', ')" th:if="${artist.name}"></span>
+                        <strong>Label: </strong>
+                        <span th:each="label, iterStat : ${release.labels}">
+                            <span th:text="${label.name}"></span><span th:if="${!iterStat.last}"></span>
+                        </span>
+                        <br>
+                        <strong>Artist:</strong>
+                        <span th:each="artist, iterStat : ${release.artists}">
+                            <span th:text="${artist.name}" th:if="${artist.name}"></span><span th:if="${!iterStat.last}">, </span>
+                        </span>
+                        <br>
+                        <strong>Style: </strong>
+                        <span th:each="style, iterStat : ${release.styles}">
+                            <span th:text="${style}"></span><span th:if="${!iterStat.last}">, </span>
+                        </span>
                         <br>
                         <strong>Release Date: </strong><span th:text="${release['released_formatted']}"></span>
                         <br>
                         <a th:href="@{/?releaseId={previousReleaseId}(previousReleaseId=${release.id})}">More info</a>
                     </div>
                 </div>
+                <div th:if="${#lists.isEmpty(historicalReleaseData)}" class="history-empty">
+                    <h3>No history</h3>
+                </div>
+            </div>
+            <div class="expand-history-box">
+                <a class="expand-history-link" th:href="@{/history}">Expand history</a>
             </div>
         </div>
         <div class="main-box-close"></div>
     </div>
 
-    <hr>
-    <p>This application uses Discogs’ API but is not affiliated with, sponsored or endorsed by Discogs. ‘Discogs’ is a trademark of Zink Media, LLC.</p>
-    <a th:href="@{https://discogs.com}">Data provided by Discogs.</a>
+    <div th:insert="~{footer}"></div>
 
 </body>
 </html>

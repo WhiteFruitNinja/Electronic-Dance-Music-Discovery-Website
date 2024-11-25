@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<body th:fragment="~{header}">
+    <div class="web-title">
+        <h1 class="web-title-name">Electronic Dance Music Discovery</h1>
+        <div class="next-music-box">
+            <a class="next-music-link" th:href="@{/?releaseId={releaseId}(releaseId=${nextReleaseId})}">Next music</a>
+        </div>
+    </div>
+</body>
+</html>

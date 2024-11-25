@@ -1,7 +1,7 @@
 app = "electronic-dance-music-discovery-website"
 kill_signal = "SIGINT"
 kill_timeout = 5
-primary_region = "waw"
+primary_region = "arn"
 
 [experimental]
 auto_rollback = true

@@ -47,7 +47,7 @@ public class MusicDiscoveryController {
 
         }
 
-        // if
+        // if cookie's value is null, then set the current cookie's value to music id. If it has any value, add more music ids.
         if (cookieValue == null || cookieValue.isEmpty()) {
             Cookie newCookie = new Cookie("historyReleases", releaseId.toString());
             newCookie.setMaxAge(Integer.MAX_VALUE);
@@ -99,11 +99,6 @@ public class MusicDiscoveryController {
 
         // Reverse the order of list
         Collections.reverse(historicalReleaseDataList);
-
-        // limit List to 5 elements
-        historicalReleaseDataList = historicalReleaseDataList.stream()
-                .limit(5)
-                .collect(Collectors.toList());
 
         Random nextRandomizer = new Random();
         int nextReleaseId = musicList.get(nextRandomizer.nextInt(musicList.size()));
@@ -163,4 +158,83 @@ public class MusicDiscoveryController {
 
         return "index";
     }
+
+    //Todo fix
+    @GetMapping("/history")
+    public String historyOfReleasesPage(Model model, @CookieValue(value = "historyReleases", required = false) String cookieValue,
+                                        @RequestParam(defaultValue = "1",name = "page", required = false) Integer page){
+
+        String[] releaseIds = null;
+
+        // Retrieve all release IDs from cookie
+        if (cookieValue != null){
+            releaseIds = cookieValue.split("\\|");
+        }
+
+
+        model.addAttribute("currentPage", page);
+
+
+        List<Map<String, Object>> historicalReleaseDataList = new ArrayList<>();
+
+        // Check if releaseIds is not null and has elements
+        if (releaseIds != null && releaseIds.length > 0 && page >= 1) {
+            int maxLengthOfReleaseIds = releaseIds.length - ((page - 1) * 5);
+            // Ensure minLengthOfReleaseIds is not out of bounds
+            int minLengthOfReleaseIds = Math.max(0, maxLengthOfReleaseIds - 5);
+
+            if(maxLengthOfReleaseIds >= 0){
+                // Fetch data for each historical release
+                for (int i = minLengthOfReleaseIds; i < maxLengthOfReleaseIds; i++) {
+                    try {
+                        int idInt = Integer.parseInt(releaseIds[i].trim());
+                        Map<String, Object> releaseData = discogsService.getReleaseData(idInt);
+                        historicalReleaseDataList.add(releaseData);
+                    } catch (NumberFormatException e) {
+                        // Handle the error if the ID is not a valid integer
+                        System.err.println("Failed to parse release ID: " + releaseIds[i]);
+                        e.printStackTrace();
+                    } catch (Exception e) {
+                        // Handle any other exceptions thrown by getReleaseData
+                        System.err.println("An error occurred while fetching release data for ID: " + releaseIds[i]);
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                // Handle the case where releaseIds is null or empty
+                System.out.println("No release IDs found in the cookie.");
+            }
+        }
+
+
+        // Define page size
+        int pageSize = 5;
+        int totalReleases = historicalReleaseDataList.size();
+
+        // Calculate total pages
+        int totalPages = (int) Math.ceil((double) totalReleases / pageSize);
+
+        // Ensure the page number is within bounds
+        page = Math.max(1, Math.min(page, totalPages)); // Clamp page to valid range
+
+        // Calculate start and end index for pagination
+        int startIndex = Math.max(((page - 1) * pageSize), 0);
+        int endIndex = Math.min(startIndex + pageSize, totalReleases);
+
+        // Get the sublist for the current page
+        List<Map<String, Object>> paginatedReleases = (startIndex < totalReleases)
+                ? historicalReleaseDataList.subList(startIndex, endIndex)
+                : new ArrayList<>();
+
+
+        int maxPages = releaseIds != null ? (int) Math.ceil((double) releaseIds.length / pageSize) : 0;
+
+        model.addAttribute("maxPages", maxPages);
+        model.addAttribute("historicalReleaseData", paginatedReleases);
+
+        return "history";
+    }
+
+
+
 }
