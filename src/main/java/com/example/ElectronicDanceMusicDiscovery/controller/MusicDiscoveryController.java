@@ -162,7 +162,8 @@ public class MusicDiscoveryController {
     //Todo fix
     @GetMapping("/history")
     public String historyOfReleasesPage(Model model, @CookieValue(value = "historyReleases", required = false) String cookieValue,
-                                        @RequestParam(defaultValue = "1",name = "page", required = false) Integer page){
+                                        @RequestParam(defaultValue = "1",name = "page", required = false) Integer page,
+                                        @RequestParam(name = "q", required = false) String query){
 
         String[] releaseIds = null;
 
@@ -185,19 +186,51 @@ public class MusicDiscoveryController {
 
             if(maxLengthOfReleaseIds >= 0){
                 // Fetch data for each historical release
-                for (int i = minLengthOfReleaseIds; i < maxLengthOfReleaseIds; i++) {
-                    try {
+                if (query == null) {
+                    for (int i = minLengthOfReleaseIds; i < maxLengthOfReleaseIds; i++) {
+                        try {
+                            int idInt = Integer.parseInt(releaseIds[i].trim());
+                            Map<String, Object> releaseData = discogsService.getReleaseData(idInt);
+                            historicalReleaseDataList.add(releaseData);
+                        } catch (NumberFormatException e) {
+                            // Handle the error if the ID is not a valid integer
+                            System.err.println("Failed to parse release ID: " + releaseIds[i]);
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            // Handle any other exceptions thrown by getReleaseData
+                            System.err.println("An error occurred while fetching release data for ID: " + releaseIds[i]);
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                else{
+                    query = query.toLowerCase();
+                    for (int i = maxLengthOfReleaseIds - 1; i > 0; i--){
+
+                        int delay = 1000; // number of milliseconds to sleep
+
+                        long start = System.currentTimeMillis();
+                        while(start >= System.currentTimeMillis() - delay); // do nothing
+
+                        System.out.println("Time Slept: " + Long.toString(System.currentTimeMillis() - start));
+
+                        if(historicalReleaseDataList.size() == 5){
+                            break;
+                        }
+
                         int idInt = Integer.parseInt(releaseIds[i].trim());
+
                         Map<String, Object> releaseData = discogsService.getReleaseData(idInt);
+                        String title = (String) releaseData.get("title");
+                        title = title.toLowerCase();
+
+                        System.out.println(idInt);
+
+                        if (!title.toLowerCase().contains(query)){
+                            continue;
+                        }
+
                         historicalReleaseDataList.add(releaseData);
-                    } catch (NumberFormatException e) {
-                        // Handle the error if the ID is not a valid integer
-                        System.err.println("Failed to parse release ID: " + releaseIds[i]);
-                        e.printStackTrace();
-                    } catch (Exception e) {
-                        // Handle any other exceptions thrown by getReleaseData
-                        System.err.println("An error occurred while fetching release data for ID: " + releaseIds[i]);
-                        e.printStackTrace();
                     }
                 }
             } else {
@@ -205,7 +238,6 @@ public class MusicDiscoveryController {
                 System.out.println("No release IDs found in the cookie.");
             }
         }
-
 
         // Define page size
         int pageSize = 5;
@@ -227,10 +259,19 @@ public class MusicDiscoveryController {
                 : new ArrayList<>();
 
 
+
         int maxPages = releaseIds != null ? (int) Math.ceil((double) releaseIds.length / pageSize) : 0;
+
+
+        Random nextRandomizer = new Random();
+        List<Integer> musicList = discogsService.getListOfReleaseId("Happy+Hardcore");
+        int nextReleaseId = musicList.get(nextRandomizer.nextInt(musicList.size()));
+
+
 
         model.addAttribute("maxPages", maxPages);
         model.addAttribute("historicalReleaseData", paginatedReleases);
+        model.addAttribute("nextReleaseId", nextReleaseId);
 
         return "history";
     }

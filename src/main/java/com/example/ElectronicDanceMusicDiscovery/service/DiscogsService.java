@@ -30,6 +30,8 @@ public class DiscogsService {
         int minPage = 1;
         int maxPage = getMaxPage(musicGenreStyle);
 
+        System.out.println(maxPage);
+
         int page = pageRandomizer.nextInt(maxPage-minPage) + minPage;
 
         String url = SEARCH_URL + "?style=" + musicGenreStyle + "&page=" + page + "&type=release&token=" + API_TOKEN;

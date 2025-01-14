@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Electronic Dance Music Discovery</title>
-    <link rel="stylesheet" href="/styles.css?=7">
+    <link rel="stylesheet" href="/styles.css?=3">
 </head>
 <body>
     <div th:insert="~{header}"></div>
@@ -13,6 +13,13 @@
 
         <div class="history-box">
             <h2 class="history-text">History</h2>
+
+            <form th:action="@{/history?={(q=${q})}}" method="get">
+                <h3 class="text-align: center;">Search title:</h3>
+                <input type="text" th:value="${q}" name="q"/>
+                <button type="submit">Search</button>
+            </form>
+
             <div class="history-container">
                 <div th:if="${not #lists.isEmpty(historicalReleaseData)}" class="history-element" th:each="release : ${historicalReleaseData}">
                     <div>
@@ -38,7 +45,7 @@
                         <strong>Style: </strong>
                         <span th:each="style, iterStat : ${release.styles}">
                                 <span th:text="${style}"></span><span th:if="${!iterStat.last}">, </span>
-                            </span>
+                        </span>
                         <br>
                         <strong>Release Date: </strong><span th:text="${release['released_formatted']}"></span>
                         <br>
@@ -49,16 +56,18 @@
                     <h3>No history</h3>
                 </div>
             </div>
-            <div class="pagination-box">
-                <a class="previous-page-link" th:if="${currentPage > 1}" th:href="@{/history?page=1}">First</a>
-                <a class="previous-page-link" th:if="${currentPage <= 1}">First</a>
+            <div class="pagination-container">
+                <a class="first-page-link" th:if="${currentPage > 1}" th:href="@{/history?page=1}">First</a>
+                <a class="first-page-link" th:if="${currentPage <= 1}">First</a>
                 <a class="previous-page-link" th:if="${currentPage > 1}" th:href="@{/history(page=${currentPage - 1})}">Previous</a>
                 <a class="previous-page-link" th:if="${currentPage <= 1}">Previous</a>
-                <span th:text="${currentPage}"></span><span>/</span><span th:text="${maxPages}"></span>
+                <div class="current-max-pages-number">
+                    <span th:text="${currentPage}"></span><span>/</span><span th:text="${maxPages}"></span>
+                </div>
                 <a class="next-page-link" th:if="${currentPage < maxPages}" th:href="@{/history(page=${currentPage + 1})}">Next</a>
                 <a class="next-page-link" th:if="${currentPage >= maxPages}">Next</a>
-                <a class="next-page-link" th:if="${currentPage < maxPages}" th:href="@{/history(page=${maxPages})}">Last</a>
-                <a class="next-page-link" th:if="${currentPage >= maxPages}">Last</a>
+                <a class="last-page-link" th:if="${currentPage < maxPages}" th:href="@{/history(page=${maxPages})}">Last</a>
+                <a class="last-page-link" th:if="${currentPage >= maxPages}">Last</a>
             </div>
         </div>
         <div class="main-box-close"></div>

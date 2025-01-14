@@ -18,7 +18,7 @@ public class CookieController {
         cookie.setMaxAge(Integer.MAX_VALUE);
         cookie.setPath("/"); // Available for the entire application
         response.addCookie(cookie);
-
+        
         return "Cookie set";
     }
 

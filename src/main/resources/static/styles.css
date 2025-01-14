@@ -261,6 +261,94 @@ body{
     background-color: rgb(150 150 150);
 }
 
+.pagination-container{
+    display: inline-flex;
+    margin-block: 5px;
+    background-color: rgb(175 175 175);
+    border: 2px solid rgb(200 200 200);
+    border-radius: 12px;
+
+}
+
+.first-page-link{
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+    padding: 10px;
+    font-size: 20px;
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+    border-right: none;
+    width: 100px;
+    margin-block: auto;
+
+}
+
+.first-page-link:hover{
+    background-color: gray;
+}
+
+.last-page-link{
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 10px;
+    font-size: 20px;
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+    border-left: none;
+    width: 100px;
+    margin-block: auto;
+
+}
+
+.last-page-link:hover{
+    background-color: gray;
+}
+
+.previous-page-link{
+    padding: 10px;
+    font-size: 20px;
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+    border-inline: none;
+    width: 100px;
+    margin-block: auto;
+
+}
+
+.previous-page-link:hover{
+    background-color: gray;
+}
+
+.next-page-link{
+    padding: 10px;
+    font-size: 20px;
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+    border-inline: none;
+    width: 100px;
+}
+
+.next-page-link:hover{
+    background-color: gray;
+}
+
+.current-max-pages-number{
+    padding: 10px;
+    font-size: 20px;
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+    width: 100px;
+    margin-block: auto;
+    border-inline: 4px solid black;
+    border-radius: 10px;
+    background-color: rgb(200 200 200);
+}
+
 @media only screen and (max-width: 1000px){
     .web-title{
         display: block;
